@@ -60,6 +60,7 @@ def generate_template_with_openai(client, solution_content):
         "### Solution Code:\n"
         f"{solution_content}\n\n"
         "### Template Code:"
+        "IMPORTANT: The response must be plain Java code with no markdown formatting or ```java blocks. "
     )
 
     template = generate_with_retries(client, prompt, max_retries=3)
