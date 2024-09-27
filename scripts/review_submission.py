@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 from openai import OpenAI
 
 def main():
