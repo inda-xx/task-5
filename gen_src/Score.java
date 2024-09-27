@@ -3,18 +3,27 @@ public class Score {
     public static int totalScore;
 
     public Score() {
-        // TODO: Implement this constructor.
+        // Initialize actionScores with a size to track multiple actions
+        actionScores = new int[5]; // Assume 5 types of actions for simplicity
+        totalScore = 0;
     }
 
     public void updateScore(int points, int actionIndex) {
-        // TODO: Implement this method.
+        if (actionIndex < 0 || actionIndex >= actionScores.length) {
+            throw new IllegalArgumentException("Invalid action index");
+        }
+        actionScores[actionIndex] += points;
+        totalScore += points;
     }
 
     public int getTotalScore() {
-        // TODO: Implement this method.
+        return totalScore;
     }
 
     public int getActionScore(int actionIndex) {
-        // TODO: Implement this method.
+        if (actionIndex < 0 || actionIndex >= actionScores.length) {
+            throw new IllegalArgumentException("Invalid action index");
+        }
+        return actionScores[actionIndex];
     }
 }
