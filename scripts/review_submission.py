@@ -1,6 +1,6 @@
 import os
 import sys
-import requests
+
 from openai import OpenAI
 
 def main():
