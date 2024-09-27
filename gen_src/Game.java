@@ -7,36 +7,48 @@ public class Game {
     private ArrayList<Enemy> enemies;
 
     public Game() {
-        player = new Player();
-        score = new Score();
-        enemies = new ArrayList<>();
-        // Add some enemies to the game
-        Enemy enemy1 = new Enemy();
-        enemies.add(enemy1);
-        enemy1.addEnemy(new Enemy());
+        // TODO: Implement this constructor.
     }
 
     public void runGame() {
-        // Simple game loop to demonstrate concept
-        for (int i = 0; i < 10; i++) {
-            // Simulate player moving randomly for demo
-            int randomDirection = (int) (Math.random() * Player.DIRECTION.length);
-            player.move(randomDirection);
-
-            // Update score for this move
-            score.updateScore(10, 0); // Assume action index 0 denotes movement
-
-            // Interact enemies with player
-            for (Enemy enemy : enemies) {
-                enemy.interact(player);
-            }
-
-            System.out.println("End of cycle " + i + ": Player position: " + player.getPosition() + ", Total score: " + score.getTotalScore());
-        }
+        // TODO: Implement this method.
     }
 
     public static void main(String[] args) {
-        Game game = new Game();
-        game.runGame();
+        // TODO: Implement this method.
+    }
+}
+
+class Player {
+    public static final String[] DIRECTION = {"NORTH", "EAST", "SOUTH", "WEST"};
+
+    public void move(int direction) {
+        // TODO: Implement this method.
+    }
+
+    public String getPosition() {
+        // TODO: Implement this method.
+        return null;
+    }
+}
+
+class Score {
+    public void updateScore(int points, int actionIndex) {
+        // TODO: Implement this method.
+    }
+
+    public int getTotalScore() {
+        // TODO: Implement this method.
+        return 0;
+    }
+}
+
+class Enemy {
+    public void addEnemy(Enemy enemy) {
+        // TODO: Implement this method.
+    }
+
+    public void interact(Player player) {
+        // TODO: Implement this method.
     }
 }
