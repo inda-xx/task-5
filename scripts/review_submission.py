@@ -1,7 +1,8 @@
 import os
 import sys
-import re
+import requests 
 from openai import OpenAI
+
 
 def main():
     # Environment variables
