@@ -7,63 +7,36 @@ public class Game {
     private ArrayList<Enemy> enemies;
 
     public Game() {
-        // TODO: Implement this constructor.
+        player = new Player();
+        score = new Score();
+        enemies = new ArrayList<>();
+        // Add some enemies to the game
+        Enemy enemy1 = new Enemy();
+        enemies.add(enemy1);
+        enemy1.addEnemy(new Enemy());
     }
 
     public void runGame() {
-        // TODO: Implement this method.
+        // Simple game loop to demonstrate concept
+        for (int i = 0; i < 10; i++) {
+            // Simulate player moving randomly for demo
+            int randomDirection = (int) (Math.random() * Player.DIRECTION.length);
+            player.move(randomDirection);
+
+            // Update score for this move
+            score.updateScore(10, 0); // Assume action index 0 denotes movement
+
+            // Interact enemies with player
+            for (Enemy enemy : enemies) {
+                enemy.interact(player);
+            }
+
+            System.out.println("End of cycle " + i + ": Player position: " + player.getPosition() + ", Total score: " + score.getTotalScore());
+        }
     }
 
     public static void main(String[] args) {
-        // TODO: Implement this method.
-    }
-}
-
-class Player {
-    public static final String[] DIRECTION = {"NORTH", "EAST", "SOUTH", "WEST"};
-
-    public Player() {
-        // TODO: Implement this constructor.
-    }
-
-    public void move(int direction) {
-        // TODO: Implement this method.
-    }
-
-    public String getPosition() {
-        // TODO: Implement this method.
-        return null;
-    }
-}
-
-class Score {
-    private int totalScore;
-
-    public Score() {
-        // TODO: Implement this constructor.
-    }
-
-    public void updateScore(int points, int actionIndex) {
-        // TODO: Implement this method.
-    }
-
-    public int getTotalScore() {
-        // TODO: Implement this method.
-        return 0;
-    }
-}
-
-class Enemy {
-
-    public Enemy() {
-        // TODO: Implement this constructor.
-    }
-
-    public void interact(Player player) {
-        // TODO: Implement this method.
-    }
-
-    public void addEnemy(Enemy enemy) {
-        // TODO: Implement this method.
+        Game game = new Game();
+        game.runGame();
     }
 }
