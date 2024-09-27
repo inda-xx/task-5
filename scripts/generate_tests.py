@@ -326,22 +326,26 @@ def generate_with_retries(client, prompt, max_retries=3):
 def write_generated_tests_to_files(directory, code_content):
     """
     Write generated Java tests to separate files based on class names.
-    Handles cases where leftover comments or initializations are present.
-    Also ensures that import statements and public class declarations are captured.
+    Ensures that import statements and public class declarations are correctly handled.
     """
-    leftover_content = ""  # To capture leftover content before the first class
-    file_blocks = re.split(r'\b(class|public\s+class|abstract\s+class|final\s+class)\b', code_content)  # Split on different class declarations
+    # Split the code into blocks starting with 'public class' or similar
+    file_blocks = re.split(r'(?=public\s+class\s+\w+\s*{)', code_content)
 
-    for i in range(1, len(file_blocks), 2):  # Iterate over every class block
-        class_declaration = file_blocks[i] + file_blocks[i + 1]  # Reattach split 'class' or 'public class'
-        block = leftover_content + class_declaration
+    for block in file_blocks:
+        if not block.strip():
+            continue  # Skip empty blocks
 
         # Extract class name
-        class_name_match = re.search(r'class\s+([A-Za-z_]\w*)\s*{', block)  # Match 'class ClassName {'
+        class_name_match = re.search(r'public\s+class\s+([A-Za-z_]\w*)\s*{', block)
         if class_name_match:
-            class_name = class_name_match.group(1)  # Extract the class name
+            class_name = class_name_match.group(1)
         else:
             print(f"Skipping block due to missing class name in block: {block[:50]}")
+            continue
+
+        # Ensure the block has matching braces
+        if block.count('{') != block.count('}'):
+            print(f"Skipping block due to unmatched braces in class {class_name}.")
             continue
 
         # Construct the file content
@@ -351,9 +355,9 @@ def write_generated_tests_to_files(directory, code_content):
             "import org.junit.Test;\n"
             "import static org.junit.Assert.*;\n\n"
         )
-        file_content = package_declaration + imports + "class " + block
+        file_content = package_declaration + imports + block
 
-        file_name = f"{class_name}Test.java"
+        file_name = f"{class_name}.java"
         file_path = os.path.join(directory, file_name)
 
         # Ensure the directory exists
