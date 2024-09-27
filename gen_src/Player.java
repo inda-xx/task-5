@@ -2,20 +2,34 @@ public class Player {
     private int x, y;
 
     public Player(int startX, int startY) {
-        // TODO: Implement this constructor.
+        this.x = startX;
+        this.y = startY;
     }
 
     public void move(String direction) {
-        // TODO: Implement this method.
+        switch (direction.toLowerCase()) {
+            case "up":
+                y -= 1;
+                break;
+            case "down":
+                y += 1;
+                break;
+            case "left":
+                x -= 1;
+                break;
+            case "right":
+                x += 1;
+                break;
+            default:
+                System.out.println("Unknown direction!");
+        }
     }
 
     public int getX() {
-        // TODO: Implement this method.
-        return 0; // Placeholder return statement
+        return x;
     }
 
     public int getY() {
-        // TODO: Implement this method.
-        return 0; // Placeholder return statement
+        return y;
     }
 }
