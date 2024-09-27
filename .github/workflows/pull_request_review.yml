@@ -3,72 +3,46 @@ name: Pull Request Review
 on:
   pull_request:
     branches:
-      - task-*  # This triggers the workflow on PRs to task branches
+      - task-*  # Triggers the workflow on PRs to task branches
 
 permissions:
   contents: write
   pull-requests: write  # Ensures the workflow can post comments on PRs
 
 jobs:
-  run-tests-and-analyze:
+  analyze-submission:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          distribution: 'adopt'
-          java-version: '11'
+          python-version: '3.8'
 
-      - name: Download JUnit
+      - name: Install dependencies
         run: |
-          wget -O junit-4.13.2.jar https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar
-          wget -O hamcrest-core-1.3.jar https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
+          python -m pip install --upgrade pip
+          pip install openai pygments
 
-      - name: Compile the Code
+      - name: Prepare environment variables
         run: |
-          mkdir -p bin
-          find src gen_src gen_test -name "*.java" > sources.txt
-          javac -cp .:junit-4.13.2.jar:hamcrest-core-1.3.jar -d bin @sources.txt
+          echo "GITHUB_PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+          echo "GITHUB_REPOSITORY=${{ github.repository }}" >> $GITHUB_ENV
 
-      - name: Run Tests
-        id: run-tests
-        continue-on-error: true  # Allows the workflow to continue even if tests fail
-        run: |
-          cd bin
-          java -cp .:../junit-4.13.2.jar:../hamcrest-core-1.3.jar org.junit.runner.JUnitCore $(find ../gen_test -name '*Test*.java' | sed 's|../||;s|.java$||;s|/|.|g') | tee ../test_results.txt || true
-          cd ..
-
-      - name: Determine Test Result
-        id: determine-result
-        run: |
-          if grep -q "FAILURES!!!" test_results.txt; then
-            echo "Some tests failed."
-            echo "tests_passed=false" >> $GITHUB_OUTPUT
-          else
-            echo "All tests passed."
-            echo "tests_passed=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Analyze and Respond
+      - name: Analyze Submission
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TESTS_PASSED: ${{ steps.determine-result.outputs.tests_passed }}
           GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          if [ "${TESTS_PASSED}" == "true" ]; then
-            python scripts/generate_compliment_and_merge.py "${GITHUB_PR_NUMBER}" test_results.txt
-          else
-            python scripts/generate_feedback_and_clues.py "${GITHUB_PR_NUMBER}" test_results.txt
-          fi
-  
+          python scripts/review_submission.py
+
       - name: Post Workflow Result
         if: always()
         run: |
