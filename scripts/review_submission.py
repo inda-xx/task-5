@@ -50,6 +50,7 @@ def main():
         "Check if the code compiles and meets the task objectives. "
         "Provide constructive feedback, pointing out any issues and suggesting improvements. Your suggestions should be subtle hints to help the student with their submission rather than revealing the answer. "
         "If the code is sound and correct, provide positive feedback and perhaps suggest advanced topics for further learning."
+        "Keep your output to a point and be concise and effective in your answers."
     )
 
     # Call OpenAI API
