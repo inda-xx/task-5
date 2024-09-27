@@ -1,142 +1,154 @@
-# Simple Game Application
+# Programming with Collections and Static Members
 
-This week's task involves creating a simple game application. You will apply your understanding of Java collections, specifically `Array` and `ArrayList`, to develop functionalities like player movement, a scoring system, and interactions with enemies.
+This week, we delve into the world of Java collections focusing on `Arrays` and `ArrayLists`, and explore the important concept of the `static` keyword. Mastery over these concepts helps in handling data effectively and facilitates cleaner code organization.
 
 ### 📝 Preparation
 
-- Review the [lecture slides on Arrays and ArrayLists](https://docs.google.com/presentation/d/1qIjQ10Dy7RW00wit0Ud5vX_012pH_1chOcuvpkt03cg/edit#slide=id.p).
-- Read and respond to all questions in [Module 5: Grouping Objects](https://qbl.sys.kth.se/sections/dd1337_programming/container/grouping_objects).
+- Review the [lecture slides](https://docs.google.com/presentation/d/1qIjQ10Dy7RW00wit0Ud5vX_012pH_1chOcuvpkt03cg/edit#slide=id.p)
+- Familiarize yourself with [Java Collections Framework](https://docs.oracle.com/javase/tutorial/collections/intro/index.html)
+- Read and complete exercises from [Module 5: Grouping Objects](https://qbl.sys.kth.se/sections/dd1337_programming/container/grouping_objects)
 
 ### ✅ Learning Goals
+This week aims to develop proficiency in:
 
-This week's learning goals include:
-
-- Working with `Arrays`
-- Understanding the `static` keyword
-- Working with `ArrayLists`
-- Combining loops and collections
+* Using and manipulating `Arrays`
+* Understanding the significance and use of the `static` keyword
+* Implementing and working with `ArrayLists`
+* Leveraging loops effectively to manipulate collections
 
 ### 🚨 Troubleshooting Guide
+If you encounter issues, here's how to navigate them:
 
-If you encounter any questions or issues, please follow this procedure:
+1. Check the [posted issues](https://gits-15.sys.kth.se/inda-24/help/issues) for similar queries.
+2. Post a new question via [New Issue](https://gits-15.sys.kth.se/inda-24/help/issues/new) if your issue is unique. Include a descriptive title.
+3. Engage with Teaching Assistants during [weekly lab sessions](https://queue.csc.kth.se/Queue/INDA).
 
-1. Review this week's [posted issues](https://gits-15.sys.kth.se/inda-24/help/issues). Check if other students have asked about your problem.
-2. If not, post a question by creating a [New Issue](https://gits-15.sys.kth.se/inda-24/help/issues/new). Add a descriptive title, beginning with "Task *x*: *summary of problem here*"
-3. Ask a TA in person during the [weekly lab](https://queue.csc.kth.se/Queue/INDA). Check your schedule to know the next lab timing.
-
-**Discussion with peers is encouraged, but do not share answers!** AI tools can be useful for explanations, **but do not use them to generate solutions.** You must be responsible for your solutions and able to explain them during assessments.
-
----
+Discuss with peers for clarity, **but refrain from sharing answers!** Using AI tools for understanding concepts is okay, **just ensure the solutions are genuinely yours.**
 
 ### 🏛 Assignment
 
-You are tasked with creating a simple game application that uses Java collections effectively.
+Java provides the `Array` and `ArrayList` structures to manage collections of objects efficiently. We'll explore these through interesting exercises that also introduce the importance of static class members.
 
-#### Exercise 1: Player Movement
+---
 
-Create a class `Player` with the following properties:
+### 📚 Java Arrays Synopsis
 
-- An `ArrayList<Integer>` representing positions.
-- A `static` integer array called `DIRECTION` with four elements to represent possible directions (e.g., {UP, DOWN, LEFT, RIGHT}).
-
-Implement methods for player movement:
-- `public void move(int direction)`: Moves the player in the specified direction.
-- Use the `static` keyword to demonstrate shared properties or methods belonging to the class itself.
+Java arrays offer a simple structure to organize data. Indexing in arrays starts at 0, meaning the first element is accessed with index 0.
 
 ```java
-public class Player {
-    private ArrayList<Integer> position;
-    public static int[] DIRECTION = {0, 1, 2, 3};
+int[] numbers = {1, 2, 3, 4, 5};
+System.out.println(numbers[0]); // Outputs: 1
+```
 
-    // Constructor and methods
-    public Player() {
-        // Initialize player at a starting position
-    }
+**Enhanced for loop**: This loop simplifies iterations over collections:
 
-    public void move(int direction) {
-        // Logic to move the player based on direction
-    }
+```java
+for (int num : numbers) {
+    System.out.println(num);
 }
 ```
 
-#### Exercise 2: Scoring System
-
-Create a `Score` class to maintain and update the player's score:
-
-- Use an `int[]` array to track scores from different actions.
-- Write a method `updateScore(int points)` that modifies the score array.
-- Ensure the static integer field `totalScore` updates whenever individual scores change.
+**Static Methods**: Static methods belong to the class rather than a specific instance, making them accessible without an object creation:
 
 ```java
-public class Score {
-    private int[] actionScores;
-    public static int totalScore;
-
-    public Score() {
-        // Initialize actionScores
-    }
-
-    public void updateScore(int points) {
-        // Add points to the totalScore and track specific action
+public class MathUtils {
+    
+    public static int square(int x) {
+        return x * x;
     }
 }
+
+// Call without an instance
+int result = MathUtils.square(5);
 ```
 
-#### Exercise 3: Enemy Interactions
+---
 
-Develop an `Enemy` class where colorful enemy interactions occur:
+### 📚 Java's ArrayLists
 
-- Use an `ArrayList<Enemy>` to manage multiple enemies.
-- Implement `public void interact(Player player)` to define interaction with the player.
-- Combine loops and collections to determine interactions between enemies and the player.
+`ArrayList` is part of Java's collections framework providing dynamic resizing capabilities, unlike fixed-size arrays.
 
 ```java
 import java.util.ArrayList;
 
-public class Enemy {
-    private ArrayList<Enemy> enemies;
-
-    public Enemy() {
-        // Initialize enemies list
-    }
-
-    public void interact(Player player) {
-        // Define what happens when an enemy interacts with the player
-    }
-}
+ArrayList<Integer> list = new ArrayList<>();
+list.add(42);
+System.out.println(list.get(0)); // Outputs: 42
 ```
 
-#### Exercise 4: Game Logic
-
-Using an `ArrayList`, manage the sequence of game actions:
-
-- Define game events and use `for` loops to iterate over collections to update the game state.
-- Implement a game loop `runGame()` that processes player inputs, updates scores, and handles enemy interactions.
-
-```java
-public class Game {
-    private Player player;
-    private Score score;
-    private ArrayList<Enemy> enemies;
-
-    public Game() {
-        // Initialize player, score, and enemies
-    }
-
-    public void runGame() {
-        // Main game loop logic
-        // Process inputs, update scores, interact with enemies
-    }
-}
-```
-
-#### 📚 Key Concepts Recap
-
-- **Arrays**: Understand and manipulate indexed collections.
-- **Static Keyword**: Share data across instances, useful for shared game values.
-- **ArrayLists**: Manage variable-length sequences like enemy lists efficiently.
-- **Loops and Collections**: Use loops to manage sequences, such as game events and interactions.
+`ArrayList` is generic and designed to hold objects, not primitive types. Thus, wrapper classes are used, like `Integer` for `int`.
 
 ---
 
-This assignment is designed to help you explore core concepts of data organization in Java while enhancing your software engineering skills through hands-on practice in the enjoyable context of a game! Happy coding! 🎮
+## Exercises
+
+### 🔹 Exercise 1: Sum of Arrays
+
+Create a static method that computes the sum of elements in an `int[]`.
+
+```java
+public static int sum(int[] array)
+```
+
+Test this method by calling it with, for example, the array `{4, 5, 6}`; the output should be `15`.
+
+### 🔹 Exercise 2: Sum of ArrayLists
+
+Implement a method to calculate the sum of integers in an `ArrayList<Integer>`.
+
+```java
+public static int sum(ArrayList<Integer> arrayList)
+```
+
+Make use of `for` or `foreach` loops. Try the solution with different data sets to ensure correctness.
+
+### 🔹 Exercise 3: Static Counting
+
+Add a method to count how many times a static method is invoked. Consider a static field `static int count` to record invocations, initializing it when the class is first loaded.
+
+```java
+public static void incrementCounter()
+```
+
+### 🔹 Exercise 4: Array to List Conversion
+
+Write a method that converts an `int[]` into an `ArrayList<Integer>` and preserves the order.
+
+```java
+public static ArrayList<Integer> arrayToList(int[] array)
+```
+
+### 🔹 Exercise 5: List to Array Conversion
+
+Conversely, create a method that converts an `ArrayList<Integer>` to an `int[]`.
+
+```java
+public static int[] listToArray(ArrayList<Integer> list)
+```
+
+### 🔹 Exercise 6: Static Utility Class
+
+Create a utility class `ArrayUtils` with static methods:
+
+1. `public static int max(int[] array)`: Finds the largest number in an array.
+2. `public static int min(ArrayList<Integer> list)`: Finds the smallest number in a list.
+
+### 🔹 Exercise 7: Even Number Extraction
+
+Design a method to extract all even numbers from an `int[]` and return them in a new `ArrayList<Integer>`.
+
+```java
+public static ArrayList<Integer> extractEvens(int[] array)
+```
+
+### 🔹 Exercise 8: Combine and Filter
+
+Implement a method combining two `ArrayList<Integer>` and then filtering out any duplicates. Ensure uniqueness in the resulting list.
+
+```java
+public static ArrayList<Integer> combineAndFilter(ArrayList<Integer> list1, ArrayList<Integer> list2)
+```
+
+---
+
+Through completing these exercises, you'll be equipped with vital skills in handling arrays, utilizing static methods, and effective collection manipulation in Java. Make sure to test your implementations comprehensively to gain confidence in your solutions!
