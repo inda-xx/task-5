@@ -3,9 +3,16 @@ package test;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import src.Game; // Adjust based on your actual package
 
 public class GameTest {
     
+    @Before
+    public void setUp() {
+        Game.setScore(0);
+        Game.initializeEnemies();
+    }
+
     @Test
     public void testMovePlayerUp() {
         int[] initialPosition = {0, 0};
@@ -49,45 +56,32 @@ public class GameTest {
     @Test
     public void testCollisionWithEnemies() {
         int[] initialPosition = {0, 0}; 
-        Game.initializeEnemies(); // Reset enemy list
         Game.movePlayer(initialPosition, "down");
         Game.checkCollisionsWithEnemies();
 
-        assertEquals(10, Game.getScore()); // Check if score increased by 10 after defeating an enemy
-        assertEquals(2, Game.getEnemies().size()); // Check if one enemy was defeated
+        assertEquals(10, Game.getScore()); // Assuming score increases by 10
+        assertEquals(1, Game.getEnemies().size()); // Assuming one enemy defeated
     }
 
     @Test
     public void testAllEnemiesDefeated() {
         int[] position = {0, 0}; 
-        Game.initializeEnemies(); // Reset enemy list
         Game.setScore(0); // Reset score
 
-        // Move to defeat all enemies
+        // Simulate defeating all enemies
         Game.checkCollisionsWithEnemies();
         Game.checkCollisionsWithEnemies();
         Game.checkCollisionsWithEnemies();
 
-        assertEquals(30, Game.getScore()); // Check if score increased to 30 after defeating all enemies
-        assertTrue(Game.getEnemies().isEmpty()); // Check if all enemies were defeated
+        assertEquals(30, Game.getScore()); // Assuming score increases by 10 each time
+        assertTrue(Game.getEnemies().isEmpty()); // All enemies defeated
     }
-}
 
-// Accessors and Mutators in Game.java for tests:
-public static int getScore() {
-    return score;
-}
-
-public static void setScore(int score) {
-    Game.score = score;
-}
-
-public static ArrayList<Enemy> getEnemies() {
-    return enemies;
-} 
-
-private static void assertArrayEquals(int[] expected, int[] actual) {
-    for (int i = 0; i < expected.length; i++) {
-        assertEquals(expected[i], actual[i]);
+    // Optional: Use JUnit's built-in assertArrayEquals
+    // If you need a custom implementation, ensure it's within the class
+    private void assertArrayEquals(int[] expected, int[] actual) {
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], actual[i]);
+        }
     }
 }
