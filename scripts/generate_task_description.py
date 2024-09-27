@@ -555,7 +555,7 @@ def main(api_key):
 
     # Create a new branch with a unique name
     stockholm_tz = timezone('Europe/Stockholm')
-    branch_name = f"task-{datetime.now(stockholm_tz).strftime('%Y%m%d%H%M%S')}"
+    branch_name = f"task-{datetime.now(stockholm_tz).strftime('%Y%m%d%H%M')}"
     create_branch(branch_name)
 
     # Write the response content to a markdown file

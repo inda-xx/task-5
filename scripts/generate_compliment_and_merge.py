@@ -1,89 +1,83 @@
-import os
 import sys
-import subprocess
-from openai import OpenAI
+import os
+import requests
+from openai import OpenAI  
 
-def main(api_key, head_branch, base_branch):
+
+def main(pr_number, test_results_file):
+    # Prepare the prompt
+    prompt = (
+        "A student has submitted their solution for a programming assignment, and their code passed all the tests.\n\n"
+        "Provide a congratulatory message to the student, do not make it too rosy or too long but simple, and suggest some further readings or topics they can explore to deepen their understanding."
+    )
+
+    # Initialize OpenAI client
+    api_key = os.getenv('OPENAI_API_KEY')
     if not api_key:
-        print("Error: OpenAI API key is missing.")
+        print("Error: OPENAI_API_KEY is not set.")
         sys.exit(1)
 
     client = OpenAI(api_key=api_key)
 
-    # Generate a compliment and analysis
-    prompt = (
-        "A student has successfully completed the task with all tests passing. "
-        "Generate a brief compliment and analysis of what has been achieved in the task. "
-        "Be positive and provide a clear summary of the student's accomplishments."
-    )
-    
-    compliment = generate_with_retries(client, prompt, max_retries=3)
-    if compliment is None:
-        print("Error: Failed to generate compliment after multiple retries.")
-        sys.exit(1)
-
-    # Post the compliment as a PR comment
-    post_comment_on_pr(compliment)
-
-    # Merge the branch
-    fetch_and_merge_branch(head_branch, base_branch)
-
-def generate_with_retries(client, prompt, max_retries=3):
-    for attempt in range(max_retries):
-        try:
-            response = client.chat.completions.create(
-                model="gpt-4o-2024-08-06",
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": prompt}
-                ]
-            )
-            return response.choices[0].message.content.strip()
-        except Exception as e:
-            print(f"Error generating compliment: {e}")
-            if attempt < max_retries - 1:
-                print("Retrying...")
-    return None
-
-def post_comment_on_pr(comment):
-    pr_number = os.getenv('GITHUB_PR_NUMBER')
-    repo = os.getenv('GITHUB_REPOSITORY')
-
-    if not pr_number or not repo:
-        print("Error: GITHUB_PR_NUMBER or GITHUB_REPOSITORY environment variables not set.")
-        sys.exit(1)
-
-    command = [
-        'gh', 'pr', 'comment', pr_number,
-        '--body', f'"{comment}"'
-    ]
-    subprocess.run(command, check=True)
-
-def fetch_and_merge_branch(head_branch, base_branch):
+    # Call OpenAI API using the new format
     try:
-        # Fetch all branches
-        subprocess.run(["git", "fetch", "--all"], check=True)
-        
-        # Checkout the base branch and pull the latest changes
-        subprocess.run(["git", "checkout", base_branch], check=True)
-        subprocess.run(["git", "pull"], check=True)
-        
-        # Checkout the head branch and merge it into the base branch
-        subprocess.run(["git", "checkout", head_branch], check=True)
-        subprocess.run(["git", "merge", base_branch], check=True)
-        
-        # Push the merged changes
-        subprocess.run(["git", "push"], check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Error merging branch {head_branch} into {base_branch}: {e}")
+        response = client.chat.completions.create(
+            model="gpt-4o-2024-08-06",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful instructor providing positive feedback to a student."
+                },
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=300,
+            temperature=0.7,
+        )
+        message = response.choices[0].message.content.strip()
+    except Exception as e:
+        print(f"Error generating message: {e}")
         sys.exit(1)
 
-if len(sys.argv) != 4:
-    print("Error: Missing required command line arguments 'api_key', 'head_branch', and 'base_branch'")
-    sys.exit(1)
+    # Post the message as a comment on the PR
+    gh_token = os.getenv('GH_TOKEN') or os.getenv('GITHUB_TOKEN')
+    if not gh_token:
+        print("Error: GH_TOKEN or GITHUB_TOKEN is not set.")
+        sys.exit(1)
 
-api_key = sys.argv[1]
-head_branch = sys.argv[2]
-base_branch = sys.argv[3]
+    repo = os.getenv('GITHUB_REPOSITORY')
+    if not repo:
+        print("Error: GITHUB_REPOSITORY is not set.")
+        sys.exit(1)
 
-main(api_key, head_branch, base_branch)
+    comment_url = f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments"
+    headers = {
+        'Authorization': f'token {gh_token}',
+        'Accept': 'application/vnd.github.v3+json'
+    }
+    data = {'body': message}
+
+    r = requests.post(comment_url, json=data, headers=headers)
+    if r.status_code == 201:
+        print('Message posted successfully.')
+    else:
+        print(f'Failed to post message: {r.status_code} {r.text}')
+        sys.exit(1)
+
+    # Optionally, merge the PR
+    # Note: Automatic merging should be used with caution
+    # Uncomment the following code if you want to automatically merge the PR
+    # merge_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/merge"
+    # merge_response = requests.put(merge_url, headers=headers)
+    # if merge_response.status_code == 200:
+    #     print('Pull request merged successfully.')
+    # else:
+    #     print(f'Failed to merge pull request: {merge_response.status_code} {merge_response.text}')
+    #     sys.exit(1)
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Usage: python generate_compliment_and_merge.py <pr_number> <test_results_file>")
+        sys.exit(1)
+    pr_number = sys.argv[1]
+    test_results_file = sys.argv[2]
+    main(pr_number, test_results_file)
