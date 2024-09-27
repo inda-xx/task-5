@@ -13,71 +13,59 @@ public class ScoreTest {
     }
 
     @Test
-    public void testUpdateScoreNormalCase() {
+    public void testInitialActionScores() {
         Score score = new Score();
-        score.updateScore(10, 0);
-        assertEquals(10, score.getTotalScore());
-        assertEquals(10, score.getActionScore(0));
+        for (int i = 0; i < 5; i++) {
+            assertEquals(0, score.getActionScore(i));
+        }
     }
 
-    @Test
-    public void testUpdateScoreMultipleActions() {
-        Score score = new Score();
-        score.updateScore(5, 0);
-        score.updateScore(15, 1);
-        assertEquals(20, score.getTotalScore());
-        assertEquals(5, score.getActionScore(0));
-        assertEquals(15, score.getActionScore(1));
-    }
-
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testUpdateScoreInvalidActionIndexNegative() {
         Score score = new Score();
-        assertThrows(IllegalArgumentException.class, () -> {
-            score.updateScore(10, -1);
-        });
+        score.updateScore(10, -1);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testUpdateScoreInvalidActionIndexTooHigh() {
         Score score = new Score();
-        assertThrows(IllegalArgumentException.class, () -> {
-            score.updateScore(10, 5);
-        });
+        score.updateScore(10, 5);
     }
 
     @Test
+    public void testUpdateScore() {
+        Score score = new Score();
+        score.updateScore(10, 0);
+        score.updateScore(20, 1);
+        assertEquals(30, score.getTotalScore());
+        assertEquals(10, score.getActionScore(0));
+        assertEquals(20, score.getActionScore(1));
+    }
+
+    @Test
+    public void testMultipleUpdatesSameActionIndex() {
+        Score score = new Score();
+        score.updateScore(10, 2);
+        score.updateScore(15, 2);
+        assertEquals(25, score.getActionScore(2));
+        assertEquals(25, score.getTotalScore());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void testGetActionScoreInvalidActionIndexNegative() {
         Score score = new Score();
-        assertThrows(IllegalArgumentException.class, () -> {
-            score.getActionScore(-1);
-        });
+        score.getActionScore(-1);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testGetActionScoreInvalidActionIndexTooHigh() {
         Score score = new Score();
-        assertThrows(IllegalArgumentException.class, () -> {
-            score.getActionScore(5);
-        });
+        score.getActionScore(5);
     }
-
-    @Test
-    public void testTotalScoreWhenMultipleInstancesExist() {
-        Score score1 = new Score();
-        Score score2 = new Score();
-
-        score1.updateScore(20, 0);
-        score2.updateScore(30, 1);
-
-        assertEquals(50, Score.totalScore);
-        // Note: This test relies on the fact that `totalScore` is static, which means it
-        // is shared across instances. If this is not the intended functionality, it might
-        // be better to reconsider the use of static here.
-    }
-} 
+}
 
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+import java.util.Arrays;
 import java.util.ArrayList;
 

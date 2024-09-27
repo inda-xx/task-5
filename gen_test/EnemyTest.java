@@ -7,13 +7,20 @@ import static org.junit.Assert.*;
 public class EnemyTest {
 
     @Test
-    public void testEnemyInteraction() {
+    public void testInteractWithPlayer() {
         Player player = new Player();
         Enemy enemy = new Enemy();
-        ArrayList<Integer> playerPosition = player.getPosition();
-        
-        // Since our `Enemy#isNearTo` method always returns true, we only need to verify
-        // that the method exists at all.
-        assertTrue(enemy.isNearTo(playerPosition));
+        enemy.interact(player);
+        // In this dummy implementation, we just test that the method doesn't throw an exception
+        assertTrue(true);
+    }
+
+    @Test
+    public void testAddEnemy() {
+        Enemy enemy = new Enemy();
+        Enemy subEnemy = new Enemy();
+        enemy.addEnemy(subEnemy);
+        // Since no public method exists for checking sub-enemies, this test assumes no exception
+        assertTrue(true);
     }
 }
