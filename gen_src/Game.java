@@ -10,34 +10,108 @@ public class Game {
     public static ArrayList<int[]> enemies = new ArrayList<>();
 
     public static void main(String[] args) {
-        // TODO: Implement this method.
+        Scanner scanner = new Scanner(System.in);
+        boolean gameRunning = true;
+        
+        while (gameRunning) {
+            System.out.println("Welcome to the Simple Game!");
+            System.out.println("1. Start Game");
+            System.out.println("2. Exit");
+            int choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    startGame(scanner);
+                    break;
+                case 2:
+                    gameRunning = false;
+                    System.out.println("Exiting game.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+        scanner.close();
     }
 
     public static void startGame(Scanner scanner) {
-        // TODO: Implement this method.
+        boolean gameActive = true;
+
+        // Example of adding enemies at random positions
+        spawnEnemy(2, 2);
+        spawnEnemy(3, 3);
+
+        while (gameActive) {
+            System.out.println("\nPlayer Position: " + Arrays.toString(playerPosition));
+            System.out.println("Score: " + score);
+            System.out.println("Enemies: ");
+            for (int[] enemy : enemies) {
+                System.out.println(Arrays.toString(enemy));
+            }
+
+            System.out.println("\nMove Player: (W)Up (S)Down (A)Left (D)Right (Q)Quit");
+            char move = scanner.next().toUpperCase().charAt(0);
+
+            switch (move) {
+                case 'W':
+                    moveUp();
+                    break;
+                case 'S':
+                    moveDown();
+                    break;
+                case 'A':
+                    moveLeft();
+                    break;
+                case 'D':
+                    moveRight();
+                    break;
+                case 'Q':
+                    gameActive = false;
+                    System.out.println("Exiting current game.");
+                    break;
+                default:
+                    System.out.println("Invalid move. Try again.");
+            }
+
+            // Check for interactions after move
+            checkInteractions();
+        }
     }
 
     public static void moveUp() {
-        // TODO: Implement this method.
+        playerPosition[1] += 1;
     }
 
     public static void moveDown() {
-        // TODO: Implement this method.
+        if (playerPosition[1] > 0) {
+            playerPosition[1] -= 1;
+        }
     }
 
     public static void moveLeft() {
-        // TODO: Implement this method.
+        if (playerPosition[0] > 0) {
+            playerPosition[0] -= 1;
+        }
     }
 
     public static void moveRight() {
-        // TODO: Implement this method.
+        playerPosition[0] += 1;
     }
 
     public static void spawnEnemy(int x, int y) {
-        // TODO: Implement this method.
+        enemies.add(new int[]{x, y});
     }
 
     public static void checkInteractions() {
-        // TODO: Implement this method.
+        for (int i = 0; i < enemies.size(); i++) {
+            int[] enemyPosition = enemies.get(i);
+            if (Arrays.equals(playerPosition, enemyPosition)) {
+                System.out.println("Encountered an enemy!");
+                // Update game rules on enemy encounter
+                score -= 10;
+                enemies.remove(i);
+                System.out.println("Score deducted. Current Score: " + score);
+                i--; // Important to adjust the index after removal.
+            }
+        }
     }
 }
