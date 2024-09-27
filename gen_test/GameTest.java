@@ -71,23 +71,11 @@ public class GameTest {
         assertEquals(30, Game.getScore()); // Check if score increased to 30 after defeating all enemies
         assertTrue(Game.getEnemies().isEmpty()); // Check if all enemies were defeated
     }
-}
 
-// Accessors and Mutators in Game.java for tests:
-public static int getScore() {
-    return score;
-}
-
-public static void setScore(int score) {
-    Game.score = score;
-}
-
-public static ArrayList<Enemy> getEnemies() {
-    return enemies;
-} 
-
-private static void assertArrayEquals(int[] expected, int[] actual) {
-    for (int i = 0; i < expected.length; i++) {
-        assertEquals(expected[i], actual[i]);
+    // If you need a custom assertArrayEquals, it should be inside the class
+    private void assertArrayEquals(int[] expected, int[] actual) {
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], actual[i]);
+        }
     }
 }
